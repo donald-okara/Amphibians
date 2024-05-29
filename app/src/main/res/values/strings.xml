@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Amphibians</string>
     <string name="amphibian_title">%s (%s)</string>
+    <string name="loading">Loading</string>
+    <string name="error">So much empty ):</string>
 
 </resources>
