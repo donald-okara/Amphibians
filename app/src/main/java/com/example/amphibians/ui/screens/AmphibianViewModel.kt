@@ -7,23 +7,35 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.amphibians.network.AmphibianApi
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
+sealed interface AmphibianUiState {
+    data class Success(val amphibian: String) : AmphibianUiState
+    object Error : AmphibianUiState
+    object Loading : AmphibianUiState
+}
+
 class AmphibianViewModel : ViewModel() {
-    var amphibianUiState : String by mutableStateOf("")
+    var amphibianUiState : AmphibianUiState by mutableStateOf(AmphibianUiState.Loading)
         private set
 
     init {
         getAmphibian()
     }
 
-    private fun getAmphibian() {
+    fun getAmphibian() {
         viewModelScope.launch {
-            try {
+            amphibianUiState = AmphibianUiState.Loading
+            amphibianUiState = try {
                 val listResult = AmphibianApi.retrofitService.getAmphibians()
-                amphibianUiState = listResult
+                AmphibianUiState.Success(
+                    "Success: ${listResult.size} Mars photos retrieved"
+                )
             } catch (e: IOException) {
-                TODO("Not yet implemented")
+                AmphibianUiState.Error
+            } catch (e: HttpException) {
+                AmphibianUiState.Error
             }
         }
     }

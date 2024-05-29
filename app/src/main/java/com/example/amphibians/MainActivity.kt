@@ -5,15 +5,19 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.amphibians.model.Amphibian
 import com.example.amphibians.ui.screens.AmphibianViewModel
 import com.example.amphibians.ui.theme.AmphibiansTheme
 import com.example.amphibians.ui.screens.HomeScreen
@@ -28,17 +32,14 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
                 ) {
-                    val amphibianViewModel : AmphibianViewModel = viewModel()
-                    HomeScreen(amphibianUiState = amphibianViewModel.amphibianUiState)
-                }
+                    AmphibianApp()
+                    }
 
             }
         }
     }
 }
-
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
