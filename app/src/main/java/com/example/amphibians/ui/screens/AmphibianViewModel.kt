@@ -4,9 +4,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.example.amphibians.data.NetworkAmphibianDetailsRepository
-import com.example.amphibians.network.AmphibianApi
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.amphibians.AmphibiansApplication
+import com.example.amphibians.data.AmphibianDetailsRepository
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -17,7 +21,7 @@ sealed interface AmphibianUiState {
     object Loading : AmphibianUiState
 }
 
-class AmphibianViewModel : ViewModel() {
+class AmphibianViewModel(private val amphibianDetailsRepository: AmphibianDetailsRepository) : ViewModel() {
     var amphibianUiState : AmphibianUiState by mutableStateOf(AmphibianUiState.Loading)
         private set
 
@@ -29,16 +33,26 @@ class AmphibianViewModel : ViewModel() {
         viewModelScope.launch {
             amphibianUiState = AmphibianUiState.Loading
             amphibianUiState = try {
-                val amphibianDetailsRepository = NetworkAmphibianDetailsRepository()
                 val listResult = amphibianDetailsRepository.getAmphibians()
                 //val listResult = AmphibianApi.retrofitService.getAmphibians()
                 AmphibianUiState.Success(
-                    "Success: ${listResult.size} Mars photos retrieved"
+                    "Success: ${listResult.size} amphibians photos retrieved"
                 )
             } catch (e: IOException) {
                 AmphibianUiState.Error
             } catch (e: HttpException) {
                 AmphibianUiState.Error
+            }
+        }
+    }
+
+    companion object{
+        val Factory : ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as AmphibiansApplication)
+                val amphibianDetailsRepository = application.container.amphibianDetailsRepository
+                AmphibianViewModel(amphibianDetailsRepository = amphibianDetailsRepository)
+
             }
         }
     }

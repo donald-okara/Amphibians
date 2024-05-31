@@ -1,4 +1,4 @@
-package com.example.amphibians
+package com.example.amphibians.ui.screens
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -14,8 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.amphibians.ui.screens.AmphibianViewModel
-import com.example.amphibians.ui.screens.HomeScreen
+import com.example.amphibians.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,7 +28,7 @@ fun AmphibianApp() {
         Surface(
             modifier = Modifier.fillMaxSize()
         ) {
-            val amphibianViewModel: AmphibianViewModel = viewModel()
+            val amphibianViewModel: AmphibianViewModel = viewModel(factory = AmphibianViewModel.Factory)
             HomeScreen(
                 amphibianUiState = amphibianViewModel.amphibianUiState,
                 contentPadding = it
